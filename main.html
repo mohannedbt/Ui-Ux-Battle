@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Battle - Japanese Flag</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .pane {
+      width: 90%;
+      max-width: 800px;
+      margin-bottom: 30px;
+    }
+
+    #editor-container {
+      width: 100%;
+      height: 300px;
+      border: 1px solid #ccc;
+    }
+
+    #target, #livePreview {
+      width: 300px;
+      height: 200px;
+      border: 1px solid #000;
+      margin-top: 10px;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 0.9em;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <header><h2>🎯 CSS Battle — Japanese Flag Edition</h2></header>
+
+  <div class="pane">
+    <h3>🎯 Target Output</h3>
+    <div id="target">
+      <div style="width:300px;height:200px;background:white;position:relative;">
+        <div style="width:120px;height:120px;background:red;border-radius:50%;position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pane">
+    <h3>💡 Your Code</h3>
+    <div id="editor-container"></div>
+    <button id="runCodeBtn">▶️ Run</button>
+    <button id="submitAttemptBtn">🚀 Submit</button>
+    <div id="livePreview"></div>
+    <div id="result"></div>
+  </div>
+
+  <footer>Powered by Monaco Editor | Live CSS Battle</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+  <script>
+    let editor;
+
+    const initialCSS = `
+/* Japanese Flag */
+body {
+  background: white;
+}
+
+#flag {
+  position: relative;
+  width: 300px;
+  height: 200px;
+  background: white;
+}
+
+#circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120px;
+  height: 120px;
+  background: red;
+  border-radius: 50%;
+}
+    `.trim();
+
+    require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' }});
+    require(['vs/editor/editor.main'], function () {
+      editor = monaco.editor.create(document.getElementById('editor-container'), {
+        value: initialCSS,
+        language: 'css',
+        theme: 'vs-dark',
+        fontSize: 14,
+        automaticLayout: true
+      });
+    });
+
+    document.getElementById('runCodeBtn').addEventListener('click', () => {
+      const cssCode = editor.getValue();
+      const preview = document.getElementById('livePreview');
+
+      preview.innerHTML = `
+        <style>${cssCode}</style>
+        <div id="flag">
+          <div id="circle"></div>
+        </div>
+      `;
+    });
+
+    function diceCoefficient(str1, str2) {
+      const set1 = new Set(str1.split(''));
+      const set2 = new Set(str2.split(''));
+      const intersection = [...set1].filter(x => set2.has(x));
+      return (2 * intersection.length) / (set1.size + set2.size);
+    }
+
+    function captureHTML(elementId) {
+      const el = document.getElementById(elementId);
+      return el ? el.innerHTML : '';
+    }
+
+    document.getElementById('submitAttemptBtn').addEventListener('click', () => {
+      const target = captureHTML('target');
+      const user = captureHTML('livePreview');
+      const score = diceCoefficient(target, user);
+      document.getElementById('result').innerText = `Similarity Score: ${(score * 100).toFixed(2)}%`;
+
+      // Send the CSS code to the server
+      submitCSS(editor.getValue());
+      submitButton.disabled = true;
+    });
+
+    function submitCSS(cssCode) {
+      fetch('submit.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: 'css=' + encodeURIComponent(cssCode)
+      })
+      .then(res => res.text())
+      .then(data => {
+        console.log("Server response:", data);
+      })
+      .catch(err => console.error("Error sending CSS:", err));
+    }
+  </script>
+</body>
+</html>
