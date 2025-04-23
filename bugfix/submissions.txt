@@ -1,0 +1,28 @@
+=== Submission at 2025-04-23 14:55:08 ===
+Code:
+<h1>Welcome to Bug Hunt
+<p>This tag is not closed!
+Explanation:
+hello
+
+=== Submission at 2025-04-23 14:55:33 ===
+Code:
+<h1>Welcome to Bug Hunt</p>
+<p>This tag is not closed!</p>
+Explanation:
+i made sure to be precise
+
+=== Submission at 2025-04-23 14:57:27 ===
+Code:
+<h1>Welcome to Bug Hunt</h1>
+<p>This tag is not closed!</p>
+Explanation:
+i made sure to close the tags for h1 and p
+
+=== Submission at 2025-04-23 14:58:02 ===
+Code:
+<h1>Welcome to Bug Hunt
+<p>This tag is not cegsjg!</p>
+Explanation:
+miaw
+
